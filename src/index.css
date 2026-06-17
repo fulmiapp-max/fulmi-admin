@@ -1,6 +1,9 @@
 @import "tailwindcss";
 
 @layer base {
+  html {
+    font-size: 118%; /* 전체 폰트 크기를 약 18.8px로 일괄 확대 (rem 기반 비례 확대) */
+  }
   body {
     @apply bg-slate-50 text-slate-800 antialiased;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;

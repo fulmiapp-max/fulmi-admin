@@ -14,11 +14,21 @@ export default function Login() {
     setError(null);
     try {
       const result = await signInWithPopup(auth, googleProvider);
+      const email = result.user.email || '';
+      const ADMIN_EMAILS = ['fulmi.app@gmail.com', 'fulmino.app@gmail.com'];
+
+      if (!ADMIN_EMAILS.includes(email)) {
+        await auth.signOut();
+        setError('허가되지 않은 관리자 계정입니다. (관리자 이메일만 접근 가능)');
+        setIsLoading(false);
+        return;
+      }
+
       const idToken = await result.user.getIdToken();
       
       // Save identity & token for API authorization
       sessionStorage.setItem('adminToken', idToken);
-      sessionStorage.setItem('adminEmail', result.user.email || '');
+      sessionStorage.setItem('adminEmail', email);
       sessionStorage.setItem('adminAuth', 'true'); // Keep legacy compatibility if any
 
       navigate('/');
