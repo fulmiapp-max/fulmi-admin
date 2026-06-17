@@ -49,10 +49,10 @@ export default function PromptManager() {
     setIsLoading(true);
     setStatusMsg(null);
     try {
-      const authKey = sessionStorage.getItem('adminAuth') === 'true' ? 'admin' : '';
+      const token = sessionStorage.getItem('adminToken') || '';
       const response = await fetch(`${API_BASE}/api/admin/prompts`, {
         headers: {
-          'x-admin-bypass': authKey, // Dev auth bypass using session flag
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
       });
@@ -87,7 +87,7 @@ export default function PromptManager() {
     setIsSaving(true);
     setStatusMsg(null);
     try {
-      const authKey = sessionStorage.getItem('adminAuth') === 'true' ? 'admin' : '';
+      const token = sessionStorage.getItem('adminToken') || '';
       const updatedPrompts = {
         ...prompts,
         [activeTab]: {
@@ -99,7 +99,7 @@ export default function PromptManager() {
       const response = await fetch(`${API_BASE}/api/admin/prompts`, {
         method: 'POST',
         headers: {
-          'x-admin-bypass': authKey,
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ prompts: updatedPrompts, targetKey: activeTab }),
