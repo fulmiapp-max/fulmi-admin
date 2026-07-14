@@ -34,6 +34,8 @@ export default function PushNotifications() {
   const [todoBodyKo, setTodoBodyKo] = useState('');
   const [diaryTitleKo, setDiaryTitleKo] = useState('');
   const [diaryBodyKo, setDiaryBodyKo] = useState('');
+  const [reportTitleKo, setReportTitleKo] = useState('');
+  const [reportBodyKo, setReportBodyKo] = useState('');
   
   const [stats, setStats] = useState<PushStats>({ totalTokens: 0, userWithTokensCount: 0 });
   const [history, setHistory] = useState<PushHistoryItem[]>([]);
@@ -106,6 +108,8 @@ export default function PushNotifications() {
       setTodoBodyKo(data.todo_reminder?.ko?.body || '');
       setDiaryTitleKo(data.diary_reminder?.ko?.title || '');
       setDiaryBodyKo(data.diary_reminder?.ko?.body || '');
+      setReportTitleKo(data.report_reminder?.ko?.title || '');
+      setReportBodyKo(data.report_reminder?.ko?.body || '');
     } catch (error: any) {
       console.error(error);
     } finally {
@@ -168,7 +172,7 @@ export default function PushNotifications() {
   // 5. 자동 푸시 템플릿 저장 핸들러
   const handleSaveTemplates = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!todoTitleKo.trim() || !todoBodyKo.trim() || !diaryTitleKo.trim() || !diaryBodyKo.trim()) return;
+    if (!todoTitleKo.trim() || !todoBodyKo.trim() || !diaryTitleKo.trim() || !diaryBodyKo.trim() || !reportTitleKo.trim() || !reportBodyKo.trim()) return;
 
     setIsTemplatesSaving(true);
     setStatusMsg(null);
@@ -192,6 +196,12 @@ export default function PushNotifications() {
             ko: {
               title: diaryTitleKo.trim(),
               body: diaryBodyKo.trim()
+            }
+          },
+          report_reminder: {
+            ko: {
+              title: reportTitleKo.trim(),
+              body: reportBodyKo.trim()
             }
           }
         })
@@ -609,11 +619,47 @@ export default function PushNotifications() {
                   </div>
                 </div>
 
+                {/* 3. Report Reminder Section */}
+                <div className="bg-slate-950/40 border border-slate-800/80 rounded-2xl p-5 space-y-4">
+                  <div className="flex items-center gap-2 border-b border-slate-800/60 pb-3">
+                    <span className="w-2.5 h-2.5 bg-blue-500 rounded-full" />
+                    <h3 className="text-sm font-extrabold text-white">3. 리포트 생성 안내 (매월 1일 오후 1시 발송)</h3>
+                  </div>
+                  
+                  <div className="space-y-1.5">
+                    <label className="text-slate-400 text-xs font-bold uppercase tracking-wider block">
+                      알림 제목 (한국어)
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="예: 월간 분석 리포트 확인하기"
+                      value={reportTitleKo}
+                      onChange={(e) => setReportTitleKo(e.target.value)}
+                      className="w-full h-11 px-3 bg-slate-950/60 border border-slate-800 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500 transition-all placeholder:text-slate-700"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-slate-400 text-xs font-bold uppercase tracking-wider block">
+                      알림 본문 (한국어)
+                    </label>
+                    <textarea
+                      required
+                      rows={3}
+                      placeholder="예: 이번 달 분석 리포트가 완성되었습니다. 지난 한 달간의 성찰을 지금 바로 확인해 보세요!"
+                      value={reportBodyKo}
+                      onChange={(e) => setReportBodyKo(e.target.value)}
+                      className="w-full p-3 bg-slate-950/60 border border-slate-800 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500 transition-all placeholder:text-slate-700 resize-none"
+                    />
+                  </div>
+                </div>
+
                 {/* Save Button */}
                 <div className="flex justify-end pt-2">
                   <button
                     type="submit"
-                    disabled={isTemplatesSaving || !todoTitleKo.trim() || !todoBodyKo.trim() || !diaryTitleKo.trim() || !diaryBodyKo.trim()}
+                    disabled={isTemplatesSaving || !todoTitleKo.trim() || !todoBodyKo.trim() || !diaryTitleKo.trim() || !diaryBodyKo.trim() || !reportTitleKo.trim() || !reportBodyKo.trim()}
                     className="px-6 h-11 bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-600/30 text-white rounded-xl font-bold text-sm shadow-lg shadow-indigo-950/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
                   >
                     {isTemplatesSaving ? (
