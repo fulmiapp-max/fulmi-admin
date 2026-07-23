@@ -51,7 +51,7 @@ const tabConfig: Record<TabType, { label: string; desc: string }> = {
   },
 };
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_BASE = import.meta.env.VITE_API_URL || 'https://fulmiapp-1051039096883.us-central1.run.app';
 
 const formatDateTime = (dateStr: string | Date) => {
   try {

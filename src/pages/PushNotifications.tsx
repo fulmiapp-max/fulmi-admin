@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Bell, Send, Users, Mail, History, Loader2, Check, ShieldAlert } from 'lucide-react';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_BASE = import.meta.env.VITE_API_URL || 'https://fulmiapp-1051039096883.us-central1.run.app';
 
 interface PushHistoryItem {
   id: string;
@@ -568,7 +568,7 @@ export default function PushNotifications() {
                 <div className="bg-slate-950/40 border border-slate-800/80 rounded-2xl p-5 space-y-4">
                   <div className="flex items-center gap-2 border-b border-slate-800/60 pb-3">
                     <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full" />
-                    <h3 className="text-sm font-extrabold text-white">1. 오늘 미완료 할 일 리마인더 (매일 아침 9시 발송)</h3>
+                    <h3 className="text-sm font-extrabold text-white">1. 오늘 미완료 할 일 리마인더 (매일 아침 8시 30분 발송)</h3>
                   </div>
                   
                   <div className="space-y-1.5">
@@ -640,7 +640,7 @@ export default function PushNotifications() {
                 <div className="bg-slate-950/40 border border-slate-800/80 rounded-2xl p-5 space-y-4">
                   <div className="flex items-center gap-2 border-b border-slate-800/60 pb-3">
                     <span className="w-2.5 h-2.5 bg-blue-500 rounded-full" />
-                    <h3 className="text-sm font-extrabold text-white">3. 리포트 생성 안내 (매월 1일 오후 1시 발송)</h3>
+                    <h3 className="text-sm font-extrabold text-white">3. 리포트 생성 안내 (매월 1일 오전 11시 발송)</h3>
                   </div>
                   
                   <div className="space-y-1.5">

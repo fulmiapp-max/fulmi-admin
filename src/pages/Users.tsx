@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Users as UsersIcon, Search, Shield, Edit, Loader2, Check, AlertCircle, X, Sparkles, Clock, Globe, Bell, UserCheck, UserX, Copy } from 'lucide-react';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_BASE = import.meta.env.VITE_API_URL || 'https://fulmiapp-1051039096883.us-central1.run.app';
 
 interface UserItem {
   id: number;
@@ -21,8 +21,6 @@ interface UserItem {
 }
 
 export default function Users() {
-  const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-  
   const [users, setUsers] = useState<UserItem[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTierFilter, setSelectedTierFilter] = useState<string>('all');

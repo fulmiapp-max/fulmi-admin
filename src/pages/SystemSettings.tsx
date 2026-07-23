@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Settings, UserPlus, Trash2, Loader2, ShieldAlert, Check, Lock, UserCheck, ArrowUpCircle } from 'lucide-react';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_BASE = import.meta.env.VITE_API_URL || 'https://fulmiapp-1051039096883.us-central1.run.app';
 const MASTER_EMAIL = 'fulmi.app@gmail.com';
 
 export default function SystemSettings() {
