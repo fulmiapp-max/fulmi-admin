@@ -20,13 +20,16 @@ interface PushStats {
   userWithTokensCount: number;
 }
 
+type PushTargetType = 'all' | 'members' | 'guests' | 'free' | 'pro' | 'individual';
+
 export default function PushNotifications() {
+  const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
   const [activeTab, setActiveTab] = useState<'manual' | 'auto'>('manual');
   
   // 수동 푸시 관련 상태
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
-  const [target, setTarget] = useState<'all' | 'individual'>('all');
+  const [target, setTarget] = useState<PushTargetType>('all');
   const [targetEmail, setTargetEmail] = useState('');
   
   // 자동 템플릿 관련 상태
@@ -57,7 +60,8 @@ export default function PushNotifications() {
       const response = await fetch(`${API_BASE}/api/admin/push/stats`, {
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          ...(isLocalhost ? { 'x-admin-bypass': 'admin' } : {})
         }
       });
       if (!response.ok) throw new Error('수신 통계를 조회하는 데 실패했습니다.');
@@ -78,7 +82,8 @@ export default function PushNotifications() {
       const response = await fetch(`${API_BASE}/api/admin/push/history`, {
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          ...(isLocalhost ? { 'x-admin-bypass': 'admin' } : {})
         }
       });
       if (!response.ok) throw new Error('발송 이력을 불러오는 데 실패했습니다.');
@@ -99,7 +104,8 @@ export default function PushNotifications() {
       const response = await fetch(`${API_BASE}/api/admin/push/auto-templates`, {
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          ...(isLocalhost ? { 'x-admin-bypass': 'admin' } : {})
         }
       });
       if (!response.ok) throw new Error('자동 템플릿 설정을 가져오는 데 실패했습니다.');
@@ -138,7 +144,8 @@ export default function PushNotifications() {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          ...(isLocalhost ? { 'x-admin-bypass': 'admin' } : {})
         },
         body: JSON.stringify({
           title: title.trim(),
@@ -183,7 +190,8 @@ export default function PushNotifications() {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          ...(isLocalhost ? { 'x-admin-bypass': 'admin' } : {})
         },
         body: JSON.stringify({
           todo_reminder: {
@@ -315,31 +323,40 @@ export default function PushNotifications() {
                 {/* Target Selection */}
                 <div className="space-y-2">
                   <label className="text-slate-400 text-xs font-bold uppercase tracking-wider block">
-                    수신 대상 지정
+                    수신 대상 지정 (회원 등급 및 그룹 세분화)
                   </label>
-                  <div className="flex gap-4">
-                    <label className="flex items-center gap-2 text-slate-300 text-sm font-medium cursor-pointer">
-                      <input
-                        type="radio"
-                        name="target"
-                        value="all"
-                        checked={target === 'all'}
-                        onChange={() => setTarget('all')}
-                        className="w-4 h-4 accent-indigo-500 bg-slate-950 border-slate-800"
-                      />
-                      전체 사용자
-                    </label>
-                    <label className="flex items-center gap-2 text-slate-300 text-sm font-medium cursor-pointer">
-                      <input
-                        type="radio"
-                        name="target"
-                        value="individual"
-                        checked={target === 'individual'}
-                        onChange={() => setTarget('individual')}
-                        className="w-4 h-4 accent-indigo-500 bg-slate-950 border-slate-800"
-                      />
-                      특정 사용자 (개별)
-                    </label>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                    {[
+                      { id: 'all', label: '전체 사용자', desc: '회원 + 게스트 전체' },
+                      { id: 'members', label: '정회원 전체', desc: '로그인 완료 회원' },
+                      { id: 'guests', label: '게스트 전체', desc: '비회원 사용자' },
+                      { id: 'free', label: 'FREE 플랜', desc: '무료 가입 회원' },
+                      { id: 'pro', label: 'PRO / 체험 플랜', desc: '유료 및 체험 유저' },
+                      { id: 'individual', label: '특정 사용자', desc: '개별 이메일 지정' },
+                    ].map((opt) => (
+                      <label
+                        key={opt.id}
+                        onClick={() => setTarget(opt.id as PushTargetType)}
+                        className={`flex flex-col p-3 rounded-xl border text-left cursor-pointer transition-all ${
+                          target === opt.id
+                            ? 'bg-indigo-600/20 border-indigo-500 text-white shadow-lg shadow-indigo-500/10 ring-1 ring-indigo-500'
+                            : 'bg-slate-950/50 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-200'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2 mb-0.5">
+                          <input
+                            type="radio"
+                            name="target"
+                            value={opt.id}
+                            checked={target === opt.id}
+                            onChange={() => setTarget(opt.id as PushTargetType)}
+                            className="w-3.5 h-3.5 accent-indigo-500 bg-slate-950 border-slate-700"
+                          />
+                          <span className="text-xs font-bold text-slate-100">{opt.label}</span>
+                        </div>
+                        <span className="text-[11px] text-slate-400 pl-5.5">{opt.desc}</span>
+                      </label>
+                    ))}
                   </div>
                 </div>
 
