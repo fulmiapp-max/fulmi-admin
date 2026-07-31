@@ -23,6 +23,12 @@ export default function SystemSettings() {
   // UX 개선: 개별 항목의 삭제 대기 상태 관리 (인라인 확인용)
   const [deletingEmail, setDeletingEmail] = useState<string | null>(null);
 
+  // AI 설정 변수
+  const [todoGenerateCount, setTodoGenerateCount] = useState<number>(3);
+  const [isAiLoading, setIsAiLoading] = useState(false);
+  const [isAiSubmitting, setIsAiSubmitting] = useState(false);
+  const [aiLastUpdatedInfo, setAiLastUpdatedInfo] = useState<{ date?: string; user?: string }>({});
+
   const currentUserEmail = sessionStorage.getItem('adminEmail') || '';
 
   // 1. 관리자 이메일 목록 로드
@@ -84,9 +90,38 @@ export default function SystemSettings() {
     }
   };
 
+  const fetchAiSettings = async () => {
+    setIsAiLoading(true);
+    try {
+      const token = sessionStorage.getItem('adminToken') || '';
+      const response = await fetch(`${API_BASE}/api/admin/system/ai-settings`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setTodoGenerateCount(data.todoGenerateCount || 3);
+        if (data.updatedAt) {
+          const d = new Date(data.updatedAt);
+          setAiLastUpdatedInfo({
+            date: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`,
+            user: data.updatedBy || ''
+          });
+        }
+      }
+    } catch (err: any) {
+      console.error('AI 설정 로드 실패:', err);
+    } finally {
+      setIsAiLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchAdmins();
     fetchVersionConfig();
+    fetchAiSettings();
   }, []);
 
   // 2. 신규 관리자 추가
@@ -186,6 +221,38 @@ export default function SystemSettings() {
       setStatusMsg({ type: 'error', text: err.message || '오류가 발생했습니다.' });
     } finally {
       setIsVersionSubmitting(false);
+    }
+  };
+
+  const handleSaveAiSettings = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsAiSubmitting(true);
+    setStatusMsg(null);
+    try {
+      const token = sessionStorage.getItem('adminToken') || '';
+      const response = await fetch(`${API_BASE}/api/admin/system/ai-settings`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          todoGenerateCount: Number(todoGenerateCount)
+        })
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || 'AI 설정 저장에 실패했습니다.');
+      }
+
+      setStatusMsg({ type: 'success', text: data.message || 'AI 설정이 저장되었습니다.' });
+      fetchAiSettings();
+    } catch (err: any) {
+      console.error(err);
+      setStatusMsg({ type: 'error', text: err.message || '오류가 발생했습니다.' });
+    } finally {
+      setIsAiSubmitting(false);
     }
   };
 
@@ -513,6 +580,71 @@ export default function SystemSettings() {
           </form>
         )}
       </div>
+
+      {/* AI 투두 생성 설정 */}
+      <div className="bg-slate-900 border border-slate-800/80 rounded-3xl p-6 shadow-xl space-y-6">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-800 pb-4">
+          <div className="space-y-1">
+            <h2 className="text-lg font-bold text-white tracking-tight flex items-center gap-2">
+              <Settings className="w-5 h-5 text-emerald-400" />
+              AI 투두 생성 옵션
+            </h2>
+            <p className="text-slate-400 text-xs">
+              제미나이가 일기를 기반으로 생성해주는 To-Do의 기본 개수를 조절합니다.
+            </p>
+          </div>
+          {aiLastUpdatedInfo.date && (
+            <span className="text-[11px] text-slate-500 font-medium">
+              마지막 변경: {aiLastUpdatedInfo.date} ({aiLastUpdatedInfo.user})
+            </span>
+          )}
+        </div>
+
+        {isAiLoading ? (
+          <div className="py-12 flex flex-col items-center justify-center text-slate-400 space-y-2">
+            <Loader2 className="w-6 h-6 animate-spin text-emerald-500" />
+            <p className="text-xs">AI 설정을 조회하는 중...</p>
+          </div>
+        ) : (
+          <form onSubmit={handleSaveAiSettings} className="space-y-6">
+            <div className="grid grid-cols-1 gap-6">
+              <div className="space-y-2 max-w-sm">
+                <label className="text-slate-400 text-xs font-bold uppercase tracking-wider block">
+                  투두 생성 개수 (기본값: 3)
+                </label>
+                <div className="flex items-center gap-4">
+                  <input
+                    type="range"
+                    min="1"
+                    max="10"
+                    value={todoGenerateCount}
+                    onChange={(e) => setTodoGenerateCount(Number(e.target.value))}
+                    className="flex-1 h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500"
+                  />
+                  <span className="text-xl font-bold text-white w-12 text-center">
+                    {todoGenerateCount}개
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-500 mt-2">
+                  1부터 10까지 설정 가능합니다. 개수를 너무 높게 설정하면 AI 응답 속도가 느려질 수 있습니다.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex justify-start border-t border-slate-800/60 pt-4">
+              <button
+                type="submit"
+                disabled={isAiSubmitting}
+                className="px-6 h-11 bg-emerald-600 hover:bg-emerald-500 disabled:bg-emerald-600/30 text-white rounded-xl font-bold text-sm shadow-lg shadow-emerald-950/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              >
+                {isAiSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+                AI 설정 저장하기
+              </button>
+            </div>
+          </form>
+        )}
+      </div>
+
     </div>
   );
 }

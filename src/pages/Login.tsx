@@ -13,6 +13,9 @@ export default function Login() {
     setIsLoading(true);
     setError(null);
     try {
+      googleProvider.setCustomParameters({
+        prompt: 'select_account'
+      });
       const result = await signInWithPopup(auth, googleProvider);
       const email = result.user.email || '';
       const ADMIN_EMAILS = ['fulmi.app@gmail.com', 'fulmino.app@gmail.com'];
