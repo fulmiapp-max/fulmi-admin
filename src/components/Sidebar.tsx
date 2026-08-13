@@ -9,6 +9,7 @@ import {
   HelpCircle, 
   Terminal, 
   Settings,
+  Beaker,
   X 
 } from 'lucide-react';
 
@@ -26,6 +27,7 @@ export const menuItems = [
   { path: '/push', name: '푸시 알림 관리', icon: Bell },
   { path: '/support', name: '고객지원', icon: HelpCircle },
   { path: '/prompts', name: '프롬프트 관리', icon: Terminal },
+  { path: '/simulator', name: '프롬프트 테스트', icon: Beaker },
   { path: '/system', name: '시스템 관리', icon: Settings },
 ];
 

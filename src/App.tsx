@@ -12,6 +12,7 @@ import Announcements from './pages/Announcements';
 import PushNotifications from './pages/PushNotifications';
 import Support from './pages/Support';
 import PromptManager from './pages/PromptManager';
+import PromptSimulator from './pages/PromptSimulator';
 import SystemSettings from './pages/SystemSettings';
 import Login from './pages/Login';
 
@@ -59,6 +60,7 @@ export default function App() {
                       <Route path="/push" element={<PushNotifications />} />
                       <Route path="/support" element={<Support />} />
                       <Route path="/prompts" element={<PromptManager />} />
+                      <Route path="/simulator" element={<PromptSimulator />} />
                       <Route path="/system" element={<SystemSettings />} />
                       {/* Fallback to Dashboard */}
                       <Route path="*" element={<Navigate to="/" replace />} />
