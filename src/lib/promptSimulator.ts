@@ -104,7 +104,7 @@ ${generatedOutputText}
 }`;
 
         const judgeModel = genAI.getGenerativeModel({
-          model: "gemini-2.5-pro",
+          model: "gemini-2.5-flash",
         });
 
         const judgeResult = await judgeModel.generateContent({
@@ -166,7 +166,7 @@ ${JSON.stringify(validResults.map(r => r.evaluation), null, 2)}
   "overallFeedback": "종합 평가 코멘트 (8가지 기준 측면에서 프롬프트의 문제점 분석 및 개선 방향)",
   "suggestedPromptPatch": "피드백이 반영되어 완전히 새롭게 작성된 프롬프트 전체 텍스트 (마크다운 포맷)"
 }`;
-      const finalJudgeModel = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
+      const finalJudgeModel = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
       const finalJudgeResult = await finalJudgeModel.generateContent({
         contents: [{ role: 'user', parts: [{ text: overallPrompt }] }],
         generationConfig: { temperature: 0.4, responseMimeType: "application/json" }

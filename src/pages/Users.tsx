@@ -165,6 +165,8 @@ export default function Users() {
         return <span className="px-2.5 py-1 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-full text-xs font-bold flex items-center gap-1"><Sparkles className="w-3 h-3" /> PRO</span>;
       case 'beta_trial':
         return <span className="px-2.5 py-1 bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 rounded-full text-xs font-bold flex items-center gap-1"><Clock className="w-3 h-3" /> BETA 체험</span>;
+      case 'trial_14':
+        return <span className="px-2.5 py-1 bg-purple-500/20 text-purple-300 border border-purple-500/30 rounded-full text-xs font-bold flex items-center gap-1"><Clock className="w-3 h-3" /> 14일 체험</span>;
       case 'trial_30':
       case 'trial':
         return <span className="px-2.5 py-1 bg-purple-500/20 text-purple-300 border border-purple-500/30 rounded-full text-xs font-bold flex items-center gap-1"><Clock className="w-3 h-3" /> 30일 체험</span>;
@@ -228,6 +230,7 @@ export default function Users() {
               <option value="guest">게스트 (guest)</option>
               <option value="free">FREE (무료 회원)</option>
               <option value="beta_trial">Beta 체험 (beta_trial)</option>
+              <option value="trial_14">14일 체험 (trial_14)</option>
               <option value="trial_30">30일 체험 (trial_30)</option>
               <option value="pro">PRO (유료 회원)</option>
             </select>
@@ -467,6 +470,7 @@ export default function Users() {
                   <option value="guest">게스트 (guest) - 비회원</option>
                   <option value="free">FREE (free) - 일반 무료 회원</option>
                   <option value="beta_trial">Beta 체험 (beta_trial) - 글로벌/개별 체험</option>
+                  <option value="trial_14">14일 체험 (trial_14) - 개인 14일 체험</option>
                   <option value="trial_30">30일 체험 (trial_30) - 개인 30일 체험</option>
                   <option value="pro">PRO (pro) - 정기 결제 유료 회원</option>
                 </select>

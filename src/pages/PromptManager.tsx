@@ -12,6 +12,7 @@ interface PromptsData {
   todoItems: PromptDetail;
   monthlyReport: PromptDetail;
   correctOnly: PromptDetail;
+  fastAnalysisFree: PromptDetail;
 }
 
 interface HistoryItem {
@@ -25,7 +26,7 @@ interface HistoryItem {
   isActive?: boolean;
 }
 
-type TabType = 'fastAnalysis' | 'aiFeedback' | 'todoItems' | 'monthlyReport' | 'correctOnly';
+type TabType = 'fastAnalysis' | 'aiFeedback' | 'todoItems' | 'monthlyReport' | 'correctOnly' | 'fastAnalysisFree';
 type EnvType = 'prod' | 'dev';
 
 const tabConfig: Record<TabType, { label: string; desc: string }> = {
@@ -48,6 +49,10 @@ const tabConfig: Record<TabType, { label: string; desc: string }> = {
   correctOnly: {
     label: '일기 맞춤법 교정',
     desc: '일기 작성/수정 시 제공되는 실시간 맞춤법 교정 및 이모지 자동 삽입 룰을 정의합니다.',
+  },
+  fastAnalysisFree: {
+    label: '무료용 일기 분석',
+    desc: '무료 사용자를 위한 일기 교정 규칙 및 분석 범위를 정의합니다.',
   },
 };
 
