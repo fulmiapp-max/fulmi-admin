@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Play, Plus, Trash2, Edit2, RefreshCw, AlertCircle } from 'lucide-react';
 import { useTestScenarios } from '../hooks/useTestScenarios';
 import { evaluateDraftPrompt } from '../lib/promptSimulator';
@@ -12,7 +12,7 @@ export default function PromptSimulator() {
   const [simulationResults, setSimulationResults] = useState<{ averageScore: number; results: SimulationResult[]; finalSuggestion: any; originalPrompt?: string } | null>(null);
   
   const [draftPrompt, setDraftPrompt] = useState<string>('');
-  const [promptType, setPromptType] = useState<string>('todoItems');
+  const [promptType] = useState<string>('todoItems');
 
   // Scenario Form State
   const [isAdding, setIsAdding] = useState(false);

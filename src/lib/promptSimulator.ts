@@ -32,7 +32,7 @@ export interface SimulationResult {
 
 export async function evaluateDraftPrompt(
   draftPrompt: string,
-  promptType: string,
+  _promptType: string,
   scenarios: PromptTestScenario[]
 ): Promise<{ averageScore: number; results: SimulationResult[]; finalSuggestion: any }> {
 
